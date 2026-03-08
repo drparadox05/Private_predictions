@@ -48,6 +48,14 @@ export function MarketDetailClient({ slug }: { slug: string }) {
       <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-8">
           <Panel className="p-7">
+            <p className="text-xs uppercase tracking-[0.28em] text-cyan/70">Resolution timeline</p>
+            {/* <h2 className="mt-2 text-2xl font-semibold text-white">Lifecycle</h2> */}
+            <div className="mt-6">
+              <MarketTimeline items={market.timeline} />
+            </div>
+          </Panel>
+
+          <Panel className="p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-cyan/70">{market.category}</p>
@@ -60,7 +68,7 @@ export function MarketDetailClient({ slug }: { slug: string }) {
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <MetricCard icon={BarChart3} label="Yes probability" value={formatPercentage(market.yesProbability)} helper="Derived from onchain net share supply" />
-              <MetricCard icon={Vault} label="Liquidity proxy" value={formatCurrency(market.liquidity)} helper="Order and share activity estimate" />
+              <MetricCard icon={Vault} label="Volume" value={formatCurrency(market.volume)} helper="Market turnover from indexed or derived market activity" />
               <MetricCard icon={Clock3} label="Time remaining" value={getTimeRemainingLabel(market.expiry)} helper="Trading end from contract state" />
               <MetricCard icon={Shield} label="Orders submitted" value={formatCompactNumber(market.onchainOrderCount)} helper="Onchain encrypted payload count" />
             </div>
@@ -79,15 +87,6 @@ export function MarketDetailClient({ slug }: { slug: string }) {
             <MarketChart data={market.chart} />
           </Panel>
 
-          <div className="grid gap-8 lg:grid-cols-2">
-            <Panel className="p-7">
-              <p className="text-xs uppercase tracking-[0.28em] text-cyan/70">Resolution timeline</p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">Lifecycle</h2>
-              <div className="mt-6">
-                <MarketTimeline items={market.timeline} />
-              </div>
-            </Panel>
-          </div>
         </div>
 
         <div className="space-y-8">

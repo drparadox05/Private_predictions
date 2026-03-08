@@ -6,25 +6,29 @@ type MarketTimelineProps = {
 
 export function MarketTimeline({ items }: MarketTimelineProps) {
   return (
-    <div className="space-y-5">
+    <div className="relative flex items-stretch gap-2">
       {items.map((item, index) => {
+        const isLast = index === items.length - 1;
         const tone =
           item.state === "completed"
-            ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+            ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-200"
             : item.state === "active"
-              ? "border-cyan/30 bg-cyan/10 text-cyan-100"
+              ? "border-cyan/40 bg-cyan/10 text-cyan-100"
               : "border-white/10 bg-white/5 text-slate-400";
-
         return (
-          <div key={`${item.label}-${index}`} className="flex gap-4">
-            <div className="flex flex-col items-center">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold ${tone}`}>{index + 1}</div>
-              {index < items.length - 1 ? <div className="mt-2 h-full w-px bg-white/10" /> : null}
+          <div key={`${item.label}-${index}`} className="group flex min-w-0 flex-1 items-center">
+            <div className={`relative flex flex-1 items-center gap-3 rounded-2xl border p-4 ${tone}`}>
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/5 text-sm font-bold">
+                {index + 1}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-white">{item.label}</p>
+                <p className="line-clamp-2 text-xs leading-4 text-slate-300">{item.description}</p>
+              </div>
             </div>
-            <div className="pb-4">
-              <p className="text-base font-semibold text-white">{item.label}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-400">{item.description}</p>
-            </div>
+            {!isLast ? (
+              <div className="mx-2 hidden h-px w-6 bg-white/20 md:block" />
+            ) : null}
           </div>
         );
       })}

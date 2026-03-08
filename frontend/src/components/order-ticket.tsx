@@ -219,37 +219,55 @@ export function OrderTicket({ market }: OrderTicketProps) {
             {formatPercentage(selectedImpliedProbability)} implied
           </div>
         </div>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          {(["BUY", "SELL"] as const).map((option) => (
-            <button
-              key={option}
-              onClick={() => setTradeSide(option)}
-              className={`rounded-2xl border px-4 py-4 text-left transition ${
-                tradeSide === option
-                  ? "border-cyan/40 bg-cyan/10 text-white shadow-neon"
-                  : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan/20"
-              }`}
-            >
-              <p className="text-xs uppercase tracking-[0.24em]">Order side</p>
-              <p className="mt-2 text-lg font-semibold">{option}</p>
-            </button>
-          ))}
-        </div>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          {(["YES", "NO"] as const).map((option) => (
-            <button
-              key={option}
-              onClick={() => setOutcome(option)}
-              className={`rounded-2xl border px-4 py-4 text-left transition ${
-                outcome === option
-                  ? "border-cyan/40 bg-cyan/10 text-white shadow-neon"
-                  : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan/20"
-              }`}
-            >
-              <p className="text-xs uppercase tracking-[0.24em]">Outcome</p>
-              <p className="mt-2 text-lg font-semibold">{option}</p>
-            </button>
-          ))}
+        <div className="mt-6 space-y-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Order side</p>
+            <div className="mt-3 grid grid-cols-2 rounded-2xl border border-white/10 bg-slate-950/70 p-1.5">
+              {(["BUY", "SELL"] as const).map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setTradeSide(option)}
+                  className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                    tradeSide === option
+                      ? option === "BUY"
+                        ? "bg-emerald-500 text-slate-950 shadow-[0_0_24px_rgba(16,185,129,0.3)]"
+                        : "bg-rose-500 text-white shadow-[0_0_24px_rgba(244,63,94,0.25)]"
+                      : "text-slate-400 hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Outcome</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Tap to select side</p>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              {(["YES", "NO"] as const).map((option) => {
+                const isSelected = outcome === option;
+                const selectedClasses = option === "YES" ? "border-emerald-400/40 bg-emerald-400/12 text-white shadow-[0_0_24px_rgba(16,185,129,0.18)]" : "border-rose-400/40 bg-rose-400/12 text-white shadow-[0_0_24px_rgba(244,63,94,0.16)]";
+
+                return (
+                  <button
+                    key={option}
+                    onClick={() => setOutcome(option)}
+                    className={`rounded-2xl border px-4 py-4 text-left transition ${isSelected ? selectedClasses : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan/20 hover:bg-white/10"}`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-lg font-semibold">{option}</span>
+                      <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${option === "YES" ? "bg-emerald-500/15 text-emerald-200" : "bg-rose-500/15 text-rose-200"}`}>
+                        {formatPercentage(option === "YES" ? market.yesProbability : 100 - market.yesProbability)}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-slate-400">{option === "YES" ? "Buy exposure if you expect the event to happen." : "Buy exposure if you expect the event not to happen."}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <div className="mt-5 grid gap-4 sm:grid-cols-3">
           <label className="block text-sm text-slate-300">

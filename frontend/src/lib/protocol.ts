@@ -243,6 +243,8 @@ async function fetchProtocolMarkets(): Promise<ProtocolMarket[]> {
       const fallbackSlug = fallback?.slug;
       const slug = fallbackSlug ?? buildProtocolSlug(numericMarketId, question);
       const syntheticMetric = Math.max(orderCount, 1) * 2_500;
+      const derivedChartVolume = fallback?.chart?.reduce((total, point) => total + point.volume, 0) ?? 0;
+      const displayedVolume = fallback?.volume ?? (derivedChartVolume > 0 ? derivedChartVolume : syntheticMetric * 2);
 
       return {
         id: numericMarketId,
@@ -253,7 +255,7 @@ async function fetchProtocolMarkets(): Promise<ProtocolMarket[]> {
         expiry: toIsoTimestamp(tradingEnd),
         resolutionSource: fallback?.resolutionSource ?? formatResolutionSource(resolutionOracle),
         liquidity: fallback?.liquidity ?? syntheticMetric,
-        volume: fallback?.volume ?? syntheticMetric * 2,
+        volume: displayedVolume,
         traders: fallback?.traders ?? Math.max(orderCount, 1),
         yesProbability,
         encryptedOrders: orderCount,
