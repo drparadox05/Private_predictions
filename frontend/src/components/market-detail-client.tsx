@@ -81,17 +81,6 @@ export function MarketDetailClient({ slug }: { slug: string }) {
 
           <div className="grid gap-8 lg:grid-cols-2">
             <Panel className="p-7">
-              <p className="text-xs uppercase tracking-[0.28em] text-cyan/70">Order book</p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">Protected placeholders</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-400">
-                The contract only stores opaque order payload bytes. Public UI should not reveal raw pre-settlement intent, so this remains intentionally abstract even with live contract wiring.
-              </p>
-              <div className="mt-6">
-                <MarketOrderBook />
-              </div>
-            </Panel>
-
-            <Panel className="p-7">
               <p className="text-xs uppercase tracking-[0.28em] text-cyan/70">Resolution timeline</p>
               <h2 className="mt-2 text-2xl font-semibold text-white">Lifecycle</h2>
               <div className="mt-6">

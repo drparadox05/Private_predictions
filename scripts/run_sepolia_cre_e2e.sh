@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CRE_DIR="$ROOT_DIR/cre"
+CRE_PROJECT_YAML="$CRE_DIR/project.yaml"
 
 if [[ -f "$CRE_DIR/.env" ]]; then
   set -a
@@ -38,9 +39,13 @@ UPDATE_CRE_CONFIGS="${UPDATE_CRE_CONFIGS:-1}"
 AUCTION_PID=""
 RESOLUTION_PID=""
 TMP_DIR="$(mktemp -d)"
+CRE_PROJECT_YAML_BACKUP="$TMP_DIR/project.yaml.bak"
 
 cleanup() {
   rm -rf "$TMP_DIR"
+  if [[ -f "$CRE_PROJECT_YAML_BACKUP" ]]; then
+    mv "$CRE_PROJECT_YAML_BACKUP" "$CRE_PROJECT_YAML"
+  fi
   if [[ -n "$RESOLUTION_PID" ]]; then kill "$RESOLUTION_PID" >/dev/null 2>&1 || true; fi
   if [[ -n "$AUCTION_PID" ]]; then kill "$AUCTION_PID" >/dev/null 2>&1 || true; fi
 }
@@ -104,15 +109,39 @@ if [[ "$START_LOCAL_SERVICES" == "1" ]]; then
 fi
 
 if [[ "$UPDATE_CRE_CONFIGS" == "1" ]]; then
+  cp "$CRE_PROJECT_YAML" "$CRE_PROJECT_YAML_BACKUP"
   python3 - \
+    "$CRE_PROJECT_YAML" \
     "$CRE_DIR/private-market-settlement/config.staging.json" \
     "$CRE_DIR/private-market-resolution/config.staging.json" \
+    "$RPC_URL" \
     "$MARKET_ADDRESS" \
     "$AUCTION_SERVICE_URL" \
     "$RESOLUTION_SERVICE_URL" <<'PY'
 import json
 import sys
-settlement_path, resolution_path, market, auction_url, resolution_url = sys.argv[1:6]
+from pathlib import Path
+
+project_path, settlement_path, resolution_path, rpc_url, market, auction_url, resolution_url = sys.argv[1:8]
+project_yaml = Path(project_path)
+project_text = project_yaml.read_text(encoding='utf-8')
+updated_lines = []
+inside_staging = False
+for line in project_text.splitlines():
+    stripped = line.strip()
+    if stripped == 'staging-settings:':
+        inside_staging = True
+        updated_lines.append(line)
+        continue
+    if inside_staging and stripped.endswith(':') and not line.startswith('  '):
+        inside_staging = False
+    if inside_staging and stripped.startswith('url: '):
+        indent = line[: len(line) - len(line.lstrip())]
+        updated_lines.append(f'{indent}url: {rpc_url}')
+        continue
+    updated_lines.append(line)
+project_yaml.write_text('\n'.join(updated_lines) + '\n', encoding='utf-8')
+
 with open(settlement_path, 'r', encoding='utf-8') as fh:
     settlement = json.load(fh)
 settlement['marketAddress'] = market

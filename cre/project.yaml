@@ -1,7 +1,7 @@
 staging-settings:
   rpcs:
     - chain-name: ethereum-testnet-sepolia
-      url: https://ethereum-sepolia-rpc.publicnode.com
+      url: ${SEPOLIA_RPC_URL}
 local-simulation:
   rpcs:
     - chain-name: ethereum-testnet-sepolia
