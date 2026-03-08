@@ -1,0 +1,6 @@
+pragma solidity 0.8.26;
+
+interface AutomationCompatibleInterface {
+    function checkUpkeep(bytes calldata checkData) external returns (bool upkeepNeeded, bytes memory performData);
+    function performUpkeep(bytes calldata performData) external;
+}

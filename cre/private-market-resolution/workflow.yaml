@@ -1,0 +1,21 @@
+staging-settings:
+  user-workflow:
+    workflow-name: "private-market-resolution-staging"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.staging.json"
+    secrets-path: ""
+local-simulation:
+  user-workflow:
+    workflow-name: "private-market-resolution-local"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.local.json"
+    secrets-path: ""
+production-settings:
+  user-workflow:
+    workflow-name: "private-market-resolution-production"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: ""

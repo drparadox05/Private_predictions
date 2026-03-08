@@ -1,0 +1,8 @@
+{
+  "chainSelectorName": "ethereum-testnet-sepolia",
+  "marketAddress": "0x0000000000000000000000000000000000000000",
+  "receiverAddress": "0x0000000000000000000000000000000000000000",
+  "auctionServiceUrl": "https://example.com/settle-epoch",
+  "gasLimit": "1500000",
+  "isTestnet": true
+}

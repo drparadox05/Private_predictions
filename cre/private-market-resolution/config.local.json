@@ -1,0 +1,8 @@
+{
+  "chainSelectorName": "ethereum-testnet-sepolia",
+  "marketAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "receiverAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "resolutionServiceUrl": "http://127.0.0.1:18081/resolve-market",
+  "gasLimit": "1500000",
+  "isTestnet": true
+}

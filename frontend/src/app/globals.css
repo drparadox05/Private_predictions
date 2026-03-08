@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.1), transparent 30%),
+    radial-gradient(circle at 80% 10%, rgba(139, 92, 246, 0.12), transparent 26%),
+    linear-gradient(180deg, #040712 0%, #050816 55%, #03050f 100%);
+  color: #e5f3ff;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.6), transparent 92%);
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.28);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  border: 2px solid rgba(15, 23, 42, 0.6);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.85), rgba(139, 92, 246, 0.85));
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+option {
+  color: white;
+}
+
+.text-balance {
+  text-wrap: balance;
+}

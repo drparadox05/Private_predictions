@@ -1,0 +1,12 @@
+{
+  "chain": "sepolia",
+  "usdcAddress": "0x724fb30A71fB0bB4Cb03383686A5DB37C75E5A29",
+  "usdcDeployTxHash": "0x680d238c063e86e5a13c00a497a7a49c5c47139b280d633f505cf88c625b136c",
+  "marketAddress": "0x341aF4ED4A95b556cc9B7B429cc84EbaD8FF3d62",
+  "marketDeployTxHash": "0xf893f4a0b686846ce75306116207a58bf459ec101aff1c3a3fa28b06a700195b",
+  "ownerAddress": "0x3C5Ed30498037E20c0ced1F1581EA8F8234A7282",
+  "automationForwarder": "0x3C5Ed30498037E20c0ced1F1581EA8F8234A7282",
+  "creForwarder": "0x15fC6ae953E024d975e77382eEeC56A9101f9F88",
+  "auctionServiceUrl": "http://127.0.0.1:8080/settle-epoch",
+  "resolutionServiceUrl": "http://127.0.0.1:18081/resolve-market"
+}

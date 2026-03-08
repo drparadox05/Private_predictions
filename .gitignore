@@ -1,0 +1,18 @@
+# env files
+.env
+.env.*
+!.env.example
+
+# CRE generated temp files
+cre/**/.cre_build_tmp.js
+
+# dependencies
+cre/node_modules/
+
+# local key material
+auction_private_key.pem
+auction_public_key.pem
+
+# Foundry generated artifacts
+cache/
+out/

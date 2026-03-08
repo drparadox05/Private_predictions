@@ -1,0 +1,20 @@
+{
+  "name": "private-prediction-markets-cre",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "auction-service": "node ./auction-service/server.mjs",
+    "resolution-service": "node ./resolution-service/server.mjs",
+    "local-broadcast": "bash ../scripts/run_local_cre_broadcast.sh"
+  },
+  "dependencies": {
+    "@chainlink/cre-sdk": "^1.1.2",
+    "viem": "^2.39.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
