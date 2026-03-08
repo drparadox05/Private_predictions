@@ -9,7 +9,7 @@ import { ClaimRewardsButton } from "@/components/claim-rewards-button";
 import { ClaimSettlementButton } from "@/components/claim-settlement-button";
 import { Panel } from "@/components/ui/panel";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { usePortfolioSnapshot } from "@/lib/protocol";
+import { type ProtocolPosition, usePortfolioSnapshot } from "@/lib/protocol";
 import { formatCurrency, formatPercentage, getTimeRemainingLabel } from "@/lib/utils";
 
 export function PortfolioClient() {
@@ -73,7 +73,7 @@ export function PortfolioClient() {
                 <th className="px-6 py-4 font-medium">Avg Price</th>
                 <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium">Action</th>
-                <th className="px-6 py-4 font-medium">Expiry</th>
+                <th className="px-6 py-4 font-medium">Progress</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -101,7 +101,7 @@ export function PortfolioClient() {
                         />
                       )}
                     </td>
-                    <td className="px-6 py-4 text-slate-400">{getTimeRemainingLabel(position.expiry)}</td>
+                    <td className="px-6 py-4 text-slate-400">{getPortfolioProgressLabel(position)}</td>
                   </tr>
                 ))
               ) : (
@@ -171,4 +171,24 @@ function StatCard({ icon: Icon, label, value, helper }: { icon: typeof Wallet; l
       <p className="mt-2 text-sm text-slate-400">{helper}</p>
     </Panel>
   );
+}
+
+function getPortfolioProgressLabel(position: ProtocolPosition) {
+  if (position.redeemed) {
+    return "Redeemed";
+  }
+
+  if (position.pendingClaimCount > 0) {
+    return `${position.pendingClaimCount} claim${position.pendingClaimCount === 1 ? "" : "s"} pending`;
+  }
+
+  if (position.redeemable) {
+    return "Ready to redeem";
+  }
+
+  if (position.marketStatus === "Resolved") {
+    return "Resolved";
+  }
+
+  return getTimeRemainingLabel(position.expiry);
 }

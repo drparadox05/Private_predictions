@@ -37,6 +37,7 @@ const fallbackProtocolMarkets = mockMarkets.map((market) => toFallbackProtocolMa
 export interface ProtocolPosition extends PortfolioPosition {
   slug: string;
   shares: number;
+  marketStatus: MarketStatus;
   pendingClaimCount: number;
   redeemed: boolean;
   redeemable: boolean;
@@ -100,6 +101,7 @@ export interface ReadyClaimsResponse {
 }
 
 type RedeemedEventArgs = {
+  user?: Address;
   marketId?: bigint;
   payout?: bigint;
 };
@@ -322,7 +324,6 @@ async function fetchPortfolioSnapshot(address: Address, markets: ProtocolMarket[
 
   const positions: ProtocolPosition[] = [];
   let history: RedemptionRecord[] = [];
-  const redeemedMarketIds = new Set<number>();
 
   for (let index = 0; index < markets.length; index += 1) {
     const market = markets[index];
@@ -340,10 +341,6 @@ async function fetchPortfolioSnapshot(address: Address, markets: ProtocolMarket[
     const redeemed = Boolean(userState[4] ?? false);
     const pendingClaimCount = Number(claimState[1] ?? 0n);
 
-    if (redeemed) {
-      redeemedMarketIds.add(market.id);
-    }
-
     const derivedPositions = [
       createProtocolPosition(market, "Yes", yesShares, pendingClaimCount, redeemed),
       createProtocolPosition(market, "No", noShares, pendingClaimCount, redeemed)
@@ -352,7 +349,13 @@ async function fetchPortfolioSnapshot(address: Address, markets: ProtocolMarket[
     positions.push(...derivedPositions);
   }
 
-  if (positions.length === 0 && redeemedMarketIds.size === 0) {
+  try {
+    history = await fetchRedemptionHistory(address, markets);
+  } catch {
+    history = [];
+  }
+
+  if (positions.length === 0 && history.length === 0) {
     return {
       positions,
       history,
@@ -363,45 +366,6 @@ async function fetchPortfolioSnapshot(address: Address, markets: ProtocolMarket[
       },
       redeemableMarketIds: []
     };
-  }
-
-  if (redeemedMarketIds.size > 0) {
-    try {
-      const redemptionLogs = await protocolClient.getContractEvents({
-        address: deployment.marketAddress,
-        abi: marketAbi,
-        eventName: "Redeemed",
-        args: { user: address },
-        fromBlock: 0n,
-        strict: false
-      });
-
-      const uniqueBlockNumbers = [...new Set(redemptionLogs.map((log) => log.blockNumber).filter((blockNumber): blockNumber is bigint => Boolean(blockNumber)))];
-      const blocks = await Promise.all(uniqueBlockNumbers.map((blockNumber) => protocolClient.getBlock({ blockNumber })));
-      const blockMap = new Map(uniqueBlockNumbers.map((blockNumber, index) => [blockNumber.toString(), blocks[index]]));
-
-      history = redemptionLogs
-        .slice()
-        .reverse()
-        .map((log, index) => {
-          const logArgs = getRedeemedArgs(log);
-          const marketId = Number(logArgs.marketId ?? 0n);
-          const market = markets.find((entry) => entry.id === marketId);
-          const block = log.blockNumber ? blockMap.get(log.blockNumber.toString()) : undefined;
-
-          return {
-            id: `${log.transactionHash ?? "redeem"}-${index}`,
-            marketId,
-            marketQuestion: market?.question ?? `Market ${marketId}`,
-            slug: market?.slug ?? buildProtocolSlug(marketId, market?.question ?? `Market ${marketId}`),
-            outcome: market?.resolvedOutcomeLabel ?? "Undetermined",
-            payout: microToNumber(BigInt(logArgs.payout ?? 0n)),
-            resolvedAt: toIsoTimestamp(Number(block?.timestamp ?? 0n))
-          } satisfies RedemptionRecord;
-        });
-    } catch {
-      history = [];
-    }
   }
 
   return {
@@ -519,7 +483,7 @@ function createProtocolPosition(
   const shares = safeBigIntToNumber(sharesRaw);
   const avgPrice = side === "Yes" ? market.yesProbability / 100 : (100 - market.yesProbability) / 100;
   const amount = shares * avgPrice;
-  const status = redeemed ? "Claimed" : pendingClaimCount > 0 || market.status !== "Live" ? "Awaiting Claim" : "Active";
+  const status = redeemed ? "Claimed" : pendingClaimCount > 0 ? "Awaiting Claim" : market.status === "Resolved" ? "Resolved" : market.status === "Settling" ? "Awaiting Claim" : "Active";
 
   return {
     id: `${market.id}-${side.toLowerCase()}`,
@@ -533,10 +497,70 @@ function createProtocolPosition(
     status,
     pnl: fallback ? fallback.yesProbability - market.yesProbability : 0,
     expiry: market.expiry,
+    marketStatus: market.status,
     pendingClaimCount,
     redeemed,
     redeemable: market.status === "Resolved" && pendingClaimCount === 0 && !redeemed
   } satisfies ProtocolPosition;
+}
+
+async function fetchRedemptionHistory(address: Address, markets: ProtocolMarket[]): Promise<RedemptionRecord[]> {
+  const normalizedAddress = address.toLowerCase();
+
+  const redemptionLogs = await readRedeemedLogs(address, normalizedAddress);
+  if (redemptionLogs.length === 0) {
+    return [];
+  }
+
+  const uniqueBlockNumbers = [...new Set(redemptionLogs.map((log) => log.blockNumber).filter((blockNumber): blockNumber is bigint => Boolean(blockNumber)))];
+  const blocks = await Promise.all(uniqueBlockNumbers.map((blockNumber) => protocolClient.getBlock({ blockNumber })));
+  const blockMap = new Map(uniqueBlockNumbers.map((blockNumber, index) => [blockNumber.toString(), blocks[index]]));
+
+  return redemptionLogs
+    .slice()
+    .reverse()
+    .map((log, index) => {
+      const logArgs = getRedeemedArgs(log);
+      const marketId = Number(logArgs.marketId ?? 0n);
+      const market = markets.find((entry) => entry.id === marketId);
+      const block = log.blockNumber ? blockMap.get(log.blockNumber.toString()) : undefined;
+
+      return {
+        id: `${log.transactionHash ?? "redeem"}-${index}`,
+        marketId,
+        marketQuestion: market?.question ?? `Market ${marketId}`,
+        slug: market?.slug ?? buildProtocolSlug(marketId, market?.question ?? `Market ${marketId}`),
+        outcome: market?.resolvedOutcomeLabel ?? "Undetermined",
+        payout: microToNumber(BigInt(logArgs.payout ?? 0n)),
+        resolvedAt: toIsoTimestamp(Number(block?.timestamp ?? 0n))
+      } satisfies RedemptionRecord;
+    });
+}
+
+async function readRedeemedLogs(address: Address, normalizedAddress: string) {
+  try {
+    return await protocolClient.getContractEvents({
+      address: deployment.marketAddress,
+      abi: marketAbi,
+      eventName: "Redeemed",
+      args: { user: address },
+      fromBlock: 0n,
+      strict: false
+    });
+  } catch {
+    const logs = await protocolClient.getContractEvents({
+      address: deployment.marketAddress,
+      abi: marketAbi,
+      eventName: "Redeemed",
+      fromBlock: 0n,
+      strict: false
+    });
+
+    return logs.filter((log) => {
+      const logArgs = getRedeemedArgs(log);
+      return typeof logArgs.user === "string" && logArgs.user.toLowerCase() === normalizedAddress;
+    });
+  }
 }
 
 function resolveMarketBySlug(markets: ProtocolMarket[], slug: string) {

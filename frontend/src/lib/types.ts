@@ -43,7 +43,7 @@ export interface PortfolioPosition {
   side: PositionSide;
   amount: number;
   avgPrice: number;
-  status: "Active" | "Awaiting Claim" | "Claimed";
+  status: "Active" | "Awaiting Claim" | "Resolved" | "Claimed";
   pnl: number;
   expiry: string;
 }
