@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Binary, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Binary, CircleDollarSign, LockKeyhole, ShieldCheck, Sparkles, Telescope, Wallet } from "lucide-react";
 
 import { AnimatedCounter } from "@/components/animated-counter";
 import { SectionHeading } from "@/components/section-heading";
@@ -36,7 +36,7 @@ export default function LandingPage() {
               Privacy-First Prediction Markets
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              A cyberpunk trading experience for encrypted order flow, epoch-based settlement, and Chainlink-powered resolution. Designed around private execution, explicit collateral accounting, and scalable claims.
+              Trade on predictions without revealing your strategy. Submit encrypted orders, lock collateral for each trading epoch, and let Chainlink settle outcomes privately. Your positions stay hidden until the market closes—then claim your winnings through verifiable Merkle proofs.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href="/app">
@@ -91,6 +91,89 @@ export default function LandingPage() {
                   Orders remain sealed until the epoch ends and the offchain auction engine decrypts and settles them.
                 </div>
               </div>
+            </div>
+          </Panel>
+        </div>
+      </section>
+
+      <section id="why" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1fr]">
+          <Panel className="p-7 border-red-500/20 bg-red-500/5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-2 w-2 rounded-full bg-red-500" />
+              <p className="text-xs uppercase tracking-[0.28em] text-red-400">THE PROBLEM</p>
+            </div>
+            <h2 className="text-3xl font-semibold text-white mb-4">Your trades are public before they execute</h2>
+            
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <span className="text-red-400 font-mono">→</span>
+                <p className="text-sm text-slate-300">You place a $10k bet on "YES"</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-red-400 font-mono">→</span>
+                <p className="text-sm text-slate-300">Bots see it in the mempool instantly</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-red-400 font-mono">→</span>
+                <p className="text-sm text-slate-300">They frontrun you, steal your alpha</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-red-400 font-mono">→</span>
+                <p className="text-sm text-slate-300">You get worse prices (or no fill)</p>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 rounded-xl border border-red-500/20 bg-red-500/5">
+              <p className="text-xs text-red-300 mb-1">This is called:</p>
+              <p className="text-lg font-semibold text-white">The Dark Forest</p>
+              <a href="https://www.paradigm.xyz/2020/08/ethereum-is-a-dark-forest" target="_blank" rel="noopener noreferrer" className="text-xs text-red-400 hover:text-red-300 mt-2 inline-block">
+                Read Paradigm's article →
+              </a>
+            </div>
+          </Panel>
+          
+          <Panel className="p-7 border-emerald-500/20 bg-emerald-500/5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              <p className="text-xs uppercase tracking-[0.28em] text-emerald-400">THE SOLUTION</p>
+            </div>
+            <h2 className="text-3xl font-semibold text-white mb-4">Sealed orders, fair settlement</h2>
+            
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <span className="text-emerald-400 font-mono">01</span>
+                <div>
+                  <p className="text-sm font-medium text-white">Lock collateral</p>
+                  <p className="text-xs text-slate-400">Visible onchain, but no order details</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-emerald-400 font-mono">02</span>
+                <div>
+                  <p className="text-sm font-medium text-white">Submit encrypted payload</p>
+                  <p className="text-xs text-slate-400">Opaque bytes, unreadable by anyone</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-emerald-400 font-mono">03</span>
+                <div>
+                  <p className="text-sm font-medium text-white">Batch settlement</p>
+                  <p className="text-xs text-slate-400">Chainlink CRE decrypts offchain</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-emerald-400 font-mono">04</span>
+                <div>
+                  <p className="text-sm font-medium text-white">Claim position</p>
+                  <p className="text-xs text-slate-400">Merkle proof, verifiable onchain</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+              <p className="text-lg font-semibold text-white mb-1">Your strategy stays hidden</p>
+              <p className="text-sm text-emerald-300">The market cannot frontrun what it cannot see</p>
             </div>
           </Panel>
         </div>

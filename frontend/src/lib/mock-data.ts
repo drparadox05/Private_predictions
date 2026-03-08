@@ -16,8 +16,8 @@ export const technologyCards = [
     description: "Offchain workflows decrypt, settle, and finalize private order flow with verifiable reports."
   },
   {
-    title: "Client-side Encryption",
-    description: "Orders are intended to be encrypted before transport so the mempool never reveals trading intent."
+    title: "Encrypted Orders",
+    description: "Orders are encrypted before transport so the mempool never reveals trading intent."
   },
   {
     title: "Merkle Claims",

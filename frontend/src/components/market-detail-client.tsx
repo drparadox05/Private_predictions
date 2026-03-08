@@ -45,16 +45,15 @@ export function MarketDetailClient({ slug }: { slug: string }) {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-      <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-8">
-          <Panel className="p-7">
-            <p className="text-xs uppercase tracking-[0.28em] text-cyan/70">Resolution timeline</p>
-            {/* <h2 className="mt-2 text-2xl font-semibold text-white">Lifecycle</h2> */}
-            <div className="mt-6">
-              <MarketTimeline items={market.timeline} />
-            </div>
-          </Panel>
+      <Panel className="p-7">
+        <p className="text-xs uppercase tracking-[0.28em] text-cyan/70">Resolution timeline</p>
+        <div className="mt-6">
+          <MarketTimeline items={market.timeline} />
+        </div>
+      </Panel>
 
+      <div className="mt-8 grid gap-8 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="space-y-8">
           <Panel className="p-7">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -86,7 +85,6 @@ export function MarketDetailClient({ slug }: { slug: string }) {
             </div>
             <MarketChart data={market.chart} />
           </Panel>
-
         </div>
 
         <div className="space-y-8">
