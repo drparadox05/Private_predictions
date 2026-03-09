@@ -22,11 +22,10 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-sm font-black text-cyan shadow-neon">
-            PM
+            SM
           </div>
           <div>
-            <p className="text-xs uppercase tracking-[0.34em] text-cyan/70">Cyber Markets</p>
-            <p className="text-sm font-semibold text-white">Private Prediction Markets</p>
+            <p className="text-xs uppercase tracking-[0.34em] text-cyan/70">ShadowMarket</p>
           </div>
         </Link>
         <nav className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 md:flex">

@@ -11,15 +11,15 @@ const connectors = walletConnectProjectId
   ? [
       injected(),
       coinbaseWallet({
-        appName: "Private Prediction Markets"
+        appName: "ShadowMarket"
       }),
       walletConnect({
         projectId: walletConnectProjectId,
         showQrModal: true,
         metadata: {
-          name: "Private Prediction Markets",
+          name: "ShadowMarket",
           description: "Privacy-first prediction markets",
-          url: "https://private-prediction-markets.local",
+          url: "https://shadowmarket.local",
           icons: []
         }
       })
@@ -27,7 +27,7 @@ const connectors = walletConnectProjectId
   : [
       injected(),
       coinbaseWallet({
-        appName: "Private Prediction Markets"
+        appName: "ShadowMarket"
       })
     ];
 

@@ -21,7 +21,7 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: "Private Prediction Markets",
+  title: "ShadowMarket",
   description: "Privacy-first prediction markets with encrypted order flow and Chainlink-backed settlement."
 };
 

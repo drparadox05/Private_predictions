@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="border-t border-white/5 bg-slate-950/40">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div className="space-y-2">
-          <p className="text-sm uppercase tracking-[0.32em] text-cyan/70">Private Prediction Markets</p>
+          <p className="text-sm uppercase tracking-[0.32em] text-cyan/70">ShadowMarket</p>
           <p className="max-w-xl text-sm text-slate-400">
             Privacy-first markets with encrypted order flow, Chainlink-backed automation, and scalable claim-based settlement.
           </p>
